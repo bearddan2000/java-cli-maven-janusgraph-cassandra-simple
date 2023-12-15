@@ -1,0 +1,25 @@
+version: '3'
+services:
+  java-srv:
+    build: java-srv
+    command: sh -c "/wait && mvn clean compile exec:java"
+    environment:
+      - WAIT_HOSTS=middle-ware:8182,db:9042
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+
+  middle-ware:
+    image: janusgraph/janusgraph
+    ports:
+      - 8182
+
+  db:
+    image: cassandra:3.11
+    environment:
+      - CASSANDRA_START_RPC=true
+    ports:
+      - 9160
+      - 9042
+      - 7199
+      - 7001
